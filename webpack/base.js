@@ -1,23 +1,33 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const GitRevisionPlugin = require("git-revision-webpack-plugin");
+const gitRevisionPlugin = new GitRevisionPlugin({
+  lightweightTags: true
+})
 
 module.exports = {
   mode: "development",
-  devtool: "eval-source-map",
+  entry: "./src/index.ts",
+  devtool: "inline-source-map",
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"]
+  },
+  output: {
+    path: path.resolve(__dirname, "../dist"),
+    filename: "bundle.js"
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+        test: /\.ts$/,
+        loader: "ts-loader",
+        exclude: "/node_modules/"
       },
       {
-        test: [/\.vert$/, /\.frag$/],
-        use: "raw-loader"
+        test: /\.js$/,
+        loader: "babel-loader"
       },
       {
         test: /\.(gif|png|jpe?g|svg|xml)$/i,
@@ -25,8 +35,15 @@ module.exports = {
       }
     ]
   },
+  devServer: {
+    contentBase: path.resolve(__dirname, "../src/"),
+    publicPath: "/",
+    host: "localhost",
+    port: 8080,
+    open: true
+  },
   plugins: [
-    new CleanWebpackPlugin({
+    new CleanWebpackPlugin(["dist"], {
       root: path.resolve(__dirname, "../")
     }),
     new webpack.DefinePlugin({
@@ -35,6 +52,12 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./index.html"
+    }),
+    gitRevisionPlugin,
+    new webpack.DefinePlugin({
+      'VERSION': JSON.stringify(gitRevisionPlugin.version()),
+      'COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash()),
+      'BRANCH': JSON.stringify(gitRevisionPlugin.branch()),
     })
   ]
 };
