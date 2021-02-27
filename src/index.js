@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import birdImage from "./assets/sprites/bluebird-downflap.png";
 
 class RootGame extends Phaser.Scene {
   constructor() {
@@ -6,19 +7,16 @@ class RootGame extends Phaser.Scene {
   }
 
   preload() {
-    // this.load.image("logo", logoImg);
+    this.load.image("bird", birdImage);
   }
 
   create() {
-    // const logo = this.add.image(400, 150, "logo");
-    // this.tweens.add({
-    //   targets: logo,
-    //   y: 450,
-    //   duration: 2000,
-    //   ease: "Power2",
-    //   yoyo: true,
-    //   loop: -1,
-    // });
+    this.player = this.add.sprite(200, 200, "bird");
+    const group = this.physics.add.group(this.player);
+
+    this.input.on("pointerdown", (pointer) => {
+      group.setVelocityY(-420);
+    });
   }
 }
 
@@ -27,6 +25,13 @@ const config = {
   parent: "flappy-bird",
   width: window.innerWidth,
   height: window.innerHeight,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 1400 },
+      debug: false,
+    },
+  },
   scene: RootGame,
 };
 
