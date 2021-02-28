@@ -10,7 +10,6 @@ export default class ObstacleSpawner {
   private player: Player;
 
   private obstacles: PipeObstacle[] = [];
-  private spawnX: number = 0;
   private spaceBetweenX: number = 250;
 
   public static DEPTH: number = 50;
@@ -48,7 +47,12 @@ export default class ObstacleSpawner {
   }
 
   createPipe() {
-    const x = this.spawnX + this.scene.game.scale.width;
+    let x = 0;
+    if (this.obstacles.length > 0) {
+      x = this.obstacles[this.obstacles.length - 1].x + this.spaceBetweenX;
+    } else {
+      x = this.scene.game.scale.width;
+    }
 
     const spaceBetweenY = ObstacleSpawner.SPACE_BETWEEN_Y;
     const offsetY =
@@ -72,8 +76,6 @@ export default class ObstacleSpawner {
       [topPipe.collider, bottomPipe.collider],
       this.onPipeCollided.bind(this)
     );
-
-    this.spawnX += this.spaceBetweenX;
   }
 
   onPipeCollided() {
