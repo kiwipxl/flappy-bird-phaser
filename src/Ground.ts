@@ -5,6 +5,8 @@ export default class Ground {
   private scene: Phaser.Scene;
   private images: Phaser.GameObjects.Image[] = [];
   private scale: number;
+  public y: number;
+  public static DEPTH: number = 100;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -15,18 +17,15 @@ export default class Ground {
   }
 
   create(container: Phaser.GameObjects.Container) {
-    // Populate the screen with the initial ground images
+    // Create a bunch of ground images to begin with to fill the screen
     const texture = this.scene.textures.get("ground");
     texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
     const size = getTextureSize(texture);
 
     this.scale = size.height / (this.scene.game.scale.height * 0.2);
+    this.y = this.scene.game.scale.height - size.height * this.scale;
 
-    const numImages = Math.ceil(
-      this.scene.game.scale.width / (size.width * this.scale)
-    );
-
-    for (let n = 0; n < numImages + 1; ++n) {
+    for (let n = 0; n < 10; ++n) {
       this.createGround(size.width * n * this.scale, container);
     }
   }
@@ -34,16 +33,12 @@ export default class Ground {
   createGround(x: number, container: Phaser.GameObjects.Container) {
     // Create a single ground image
     const texture = this.scene.textures.get("ground");
-    texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
     const size = getTextureSize(texture);
 
-    const posX = x;
-    const posY = this.scene.game.scale.height - size.height * this.scale;
-
-    let ground = this.scene.add.image(posX, posY, texture);
+    let ground = this.scene.add.image(x, this.y, texture);
     ground.setScale(this.scale, this.scale);
     ground.setOrigin(0, 0);
-    ground.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    ground.setDepth(Ground.DEPTH);
 
     container.add(ground);
     this.images.push(ground);
