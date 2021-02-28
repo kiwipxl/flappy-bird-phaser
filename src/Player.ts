@@ -1,8 +1,8 @@
 import "phaser";
 
 export default class Player {
-  private sprite: Phaser.GameObjects.Sprite;
   private scene: Phaser.Scene;
+  public sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -21,7 +21,7 @@ export default class Player {
   }
 
   create() {
-    this.sprite = this.scene.add.sprite(200, 200, "bird");
+    this.sprite = this.scene.physics.add.sprite(150, 200, "bird");
     this.sprite.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
 
     this.scene.anims.create({
@@ -37,11 +37,12 @@ export default class Player {
     });
 
     this.sprite.play("flap");
-
-    const group = this.scene.physics.add.group(this.sprite);
+    this.sprite.setCircle(16);
+    this.sprite.setOrigin(0, 0);
+    this.sprite.setBounce(0.5);
 
     this.scene.input.on("pointerdown", () => {
-      group.setVelocityY(-420);
+      this.sprite.setVelocityY(-420);
     });
   }
 }

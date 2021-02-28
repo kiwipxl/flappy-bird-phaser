@@ -16,7 +16,7 @@ export default class Ground {
     this.scene.load.image("ground", "./assets/sprites/base.png");
   }
 
-  create(container: Phaser.GameObjects.Container) {
+  create() {
     // Create a bunch of ground images to begin with to fill the screen
     const texture = this.scene.textures.get("ground");
     texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
@@ -26,37 +26,34 @@ export default class Ground {
     this.y = this.scene.game.scale.height - size.height * this.scale;
 
     for (let n = 0; n < 10; ++n) {
-      this.createGround(size.width * n * this.scale, container);
+      this.createGround(size.width * n * this.scale);
     }
   }
 
-  createGround(x: number, container: Phaser.GameObjects.Container) {
+  createGround(x: number) {
     // Create a single ground image
-    const texture = this.scene.textures.get("ground");
-    const size = getTextureSize(texture);
-
-    let ground = this.scene.add.image(x, this.y, texture);
+    let ground = this.scene.add.sprite(x, this.y, "ground");
     ground.setScale(this.scale, this.scale);
     ground.setOrigin(0, 0);
     ground.setDepth(Ground.DEPTH);
 
-    container.add(ground);
     this.images.push(ground);
   }
 
-  update(container: Phaser.GameObjects.Container) {
+  update(scrollSpeed: number) {
     const firstGround = this.images[0];
     const lastGround = this.images[this.images.length - 1];
 
-    if (firstGround.x + container.x < -firstGround.width * this.scale) {
+    if (firstGround.x < -firstGround.width * this.scale) {
       this.images.splice(0, 1);
 
-      container.remove(firstGround);
+      this.scene.children.remove(firstGround);
 
-      this.createGround(
-        lastGround.x + firstGround.width * this.scale,
-        container
-      );
+      this.createGround(lastGround.x + firstGround.width * this.scale);
+    }
+
+    for (const ground of this.images) {
+      ground.x -= scrollSpeed;
     }
   }
 }
