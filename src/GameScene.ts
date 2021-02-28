@@ -1,24 +1,36 @@
 import "phaser";
-import BackgroundSpawner from "./BackgroundSpawner";
+import Background from "./Background";
+import Ground from "./Ground";
 import Player from "./Player";
 
 export default class GameScene extends Phaser.Scene {
-  private bgSpawner: BackgroundSpawner = new BackgroundSpawner(this);
+  private background: Background = new Background(this);
+  private ground: Ground = new Ground(this);
   private player: Player = new Player(this);
+  private movingContainer: Phaser.GameObjects.Container;
 
   constructor() {
     super("GameScene");
   }
 
   preload() {
-    this.bgSpawner.preload();
+    this.background.preload();
+    this.ground.preload();
     this.player.preload();
   }
 
   create() {
-    this.bgSpawner.create();
+    this.background.create();
+
+    this.movingContainer = this.add.container(0, 0);
+    this.ground.create(this.movingContainer);
+
     this.player.create();
   }
 
-  update() {}
+  update() {
+    this.movingContainer.x -= 2;
+
+    this.ground.update(this.movingContainer);
+  }
 }
