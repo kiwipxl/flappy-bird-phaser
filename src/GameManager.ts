@@ -1,8 +1,8 @@
 import "phaser";
-import Background from "./Background";
-import Ground from "./Ground";
-import Player from "./Player";
-import ObstacleSpawner from "./ObstacleSpawner";
+import Background from "./objects/Background";
+import Ground from "./objects/Ground";
+import Player from "./objects/Player";
+import ObstacleSpawner from "./objects/ObstacleSpawner";
 
 export default class GameManager extends Phaser.GameObjects.GameObject {
   private background: Background = new Background(this.scene);
