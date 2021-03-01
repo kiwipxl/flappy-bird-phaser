@@ -1,5 +1,6 @@
 import "phaser";
 import { getTextureSize } from "../util";
+import Player from "./Player";
 
 export default class Ground {
   private scene: Phaser.Scene;

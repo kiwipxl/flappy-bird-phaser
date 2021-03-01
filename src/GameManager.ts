@@ -23,7 +23,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
     this.player.preload();
     this.obstacleSpawner.preload();
 
-    this.obstacleSpawner.onHitObstacle = () => this.onGameOver();
+    this.obstacleSpawner.onHitObstacle = () => this.gameOver();
   }
 
   create() {
@@ -48,18 +48,26 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
       if (passed) {
         this.onUpdateScore(this.score + 1);
       }
+
+      if (this.player.sprite.y >= this.ground.y - 42) {
+        this.gameOver();
+        this.player.sprite.setY(this.ground.y - 42);
+      }
     }
   }
 
+  gameOver() {
+    this.onGameOver();
+  }
+
   start() {
-    console.log("start");
     this.running = true;
+    this.player.reset();
     this.player.sprite.body.setAllowGravity(true);
     this.obstacleSpawner.start(this.ground, this.player);
   }
 
   pause() {
-    console.log("pause");
     this.running = false;
     this.player.sprite.body.setAllowGravity(false);
     this.player.sprite.body.setVelocity(0, 0);

@@ -15,7 +15,7 @@ export default class ObstacleSpawner {
 
   public static DEPTH: number = 50;
   private static MIN_OFFSET_Y = 50;
-  private static SPACE_BETWEEN_Y = 150;
+  private static SPACE_BETWEEN_Y = 120;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;

@@ -21,7 +21,7 @@ export default class Player {
   }
 
   create() {
-    this.sprite = this.scene.physics.add.sprite(150, 200, "bird");
+    this.sprite = this.scene.physics.add.sprite(0, 0, "bird");
     this.sprite.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
 
     this.scene.anims.create({
@@ -44,5 +44,11 @@ export default class Player {
     this.scene.input.on("pointerdown", () => {
       this.sprite.setVelocityY(-420);
     });
+
+    this.reset();
+  }
+
+  reset() {
+    this.sprite.setPosition(150, 200);
   }
 }
