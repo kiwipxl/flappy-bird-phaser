@@ -19,6 +19,8 @@ export default class Player {
       "./assets/sprites/bluebird-midflap.png"
     );
     this.scene.load.image("bird-flap3", "./assets/sprites/bluebird-upflap.png");
+
+    this.scene.load.image("fire", "./assets/sprites/fire.png");
   }
 
   create() {
@@ -73,7 +75,33 @@ export default class Player {
   }
 
   reset() {
+    this.sprite.setVisible(true);
     this.sprite.setPosition(150, 200);
     this.sprite.play("flap");
+  }
+
+  die() {
+    this.sprite.setVisible(false);
+
+    const particles = this.scene.add.particles("fire");
+    const emitter = particles.createEmitter({
+      active: true,
+      blendMode: 0,
+      gravityX: 0,
+      gravityY: 1000,
+      on: true,
+      particleBringToTop: true,
+      radial: true,
+      visible: true,
+      angle: { min: 90, max: 360 },
+      alpha: { start: 1, end: 0, ease: "Linear" },
+      lifespan: { min: 100, max: 600 },
+      quantity: 25,
+      tint: 0xff0000,
+      speed: { min: 50, max: 500 },
+      scale: { start: 0.4, end: 0, ease: "Linear" },
+    });
+    particles.setDepth(200);
+    emitter.explode(100, this.sprite.x, this.sprite.y);
   }
 }

@@ -58,6 +58,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
   }
 
   gameOver() {
+    this.player.die();
     this.onGameOver();
   }
 
