@@ -1,5 +1,5 @@
 import "phaser";
-import GameScene from "./GameScene";
+import RootScene from "./RootScene";
 
 let game: Phaser.Game;
 
@@ -7,8 +7,8 @@ class RootGame extends Phaser.Game {
   constructor(config: Phaser.Types.Core.GameConfig) {
     super(config);
 
-    this.scene.add("GameScene", GameScene);
-    this.scene.start("GameScene");
+    this.scene.add("RootScene", RootScene);
+    this.scene.start("RootScene");
   }
 }
 
