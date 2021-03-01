@@ -15,6 +15,7 @@ export default class RootScene extends Phaser.Scene {
   private state: GameState;
 
   private gameManager: GameManager;
+  private currentUI: Phaser.GameObjects.GameObject;
 
   preload() {
     this.load.bitmapFont(
@@ -25,8 +26,11 @@ export default class RootScene extends Phaser.Scene {
 
     this.gameManager = new GameManager(this, "GameManager");
     this.gameManager.preload();
+
     this.gameManager.onUpdateScore = (newScore: number) =>
       (this.score = newScore);
+
+    this.gameManager.onGameOver = () => this.setGameState(GameState.GameOver);
   }
 
   create() {
@@ -45,18 +49,35 @@ export default class RootScene extends Phaser.Scene {
         break;
 
       case GameState.GameActive:
+        const activeUI = this.currentUI as GameActiveUI;
+        activeUI.score = this.score;
         break;
 
       case GameState.GameOver:
         break;
     }
+
+    if (this.currentUI) {
+      this.currentUI.update();
+    }
   }
 
   setGameState(newState: GameState) {
+    if (this.state === newState) {
+      return;
+    }
+    this.state = newState;
+
+    if (this.currentUI) {
+      this.children.remove(this.currentUI);
+    }
+
     switch (newState) {
       case GameState.GameReady:
         this.gameManager.pause();
-        this.add.existing(new GameReadyUI(this));
+
+        this.currentUI = new GameReadyUI(this);
+        this.add.existing(this.currentUI);
 
         this.input.once("pointerdown", () =>
           this.setGameState(GameState.GameActive)
@@ -65,12 +86,22 @@ export default class RootScene extends Phaser.Scene {
 
       case GameState.GameActive:
         this.gameManager.start();
-        this.add.existing(new GameActiveUI(this));
+
+        this.currentUI = new GameActiveUI(this);
+        this.add.existing(this.currentUI);
         break;
 
       case GameState.GameOver:
         this.gameManager.pause();
-        this.add.existing(new GameOverUI(this));
+
+        this.currentUI = new GameOverUI(this, this.score);
+        this.add.existing(this.currentUI);
+
+        this.input.once("pointerdown", () => {
+          // reset game
+          this.score = 0;
+          this.setGameState(GameState.GameActive);
+        });
         break;
     }
   }

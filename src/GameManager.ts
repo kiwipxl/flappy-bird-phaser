@@ -13,6 +13,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
   public score: number;
   public running: boolean = false;
   public onUpdateScore: (newScore: number) => void;
+  public onGameOver: () => void;
 
   private static SCROLL_SPEED = 2;
 
@@ -21,6 +22,8 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
     this.ground.preload();
     this.player.preload();
     this.obstacleSpawner.preload();
+
+    this.obstacleSpawner.onHitObstacle = () => this.onGameOver();
   }
 
   create() {
@@ -49,13 +52,16 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
   }
 
   start() {
+    console.log("start");
     this.running = true;
     this.player.sprite.body.setAllowGravity(true);
     this.obstacleSpawner.start(this.ground, this.player);
   }
 
   pause() {
+    console.log("pause");
     this.running = false;
     this.player.sprite.body.setAllowGravity(false);
+    this.player.sprite.body.setVelocity(0, 0);
   }
 }

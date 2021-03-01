@@ -1,5 +1,4 @@
 import "phaser";
-import { getTextureSize } from "./util";
 import Ground from "./Ground";
 import PipeObstacle from "./PipeObstacle";
 import Player from "./Player";
@@ -12,7 +11,7 @@ export default class ObstacleSpawner {
   public obstacles: PipeObstacle[] = [];
   private spaceBetweenX: number = 250;
 
-  public onPassObstacle: () => void;
+  public onHitObstacle: () => void;
 
   public static DEPTH: number = 50;
   private static MIN_OFFSET_Y = 50;
@@ -39,6 +38,8 @@ export default class ObstacleSpawner {
   reset() {
     for (const obstacle of this.obstacles) {
       this.scene.children.remove(obstacle);
+      this.scene.children.remove(obstacle.collider);
+      this.scene.physics.world.remove(obstacle.collider.body);
     }
     this.obstacles = [];
 
@@ -73,15 +74,14 @@ export default class ObstacleSpawner {
     this.obstacles.push(topPipe);
     this.obstacles.push(bottomPipe);
 
-    this.scene.physics.add.overlap(
+    const collider = this.scene.physics.add.overlap(
       this.player.sprite,
       [topPipe.collider, bottomPipe.collider],
-      this.onPipeCollided.bind(this)
+      () => {
+        this.onHitObstacle();
+        this.scene.physics.world.removeCollider(collider);
+      }
     );
-  }
-
-  onPipeCollided() {
-    this.player.sprite.setScale(2, 2);
   }
 
   update(scrollSpeed: number) {
@@ -95,6 +95,8 @@ export default class ObstacleSpawner {
       this.obstacles.splice(0, 1);
 
       this.scene.children.remove(firstObstacle);
+      this.scene.children.remove(firstObstacle.collider);
+      this.scene.physics.world.remove(firstObstacle.collider.body);
 
       this.createPipe();
     }
