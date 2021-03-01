@@ -9,13 +9,13 @@ export default class GameActiveUI extends Phaser.GameObjects.GameObject {
 
     this.scoreText = this.scene.add.bitmapText(
       200,
-      50,
+      100,
       "flappy-bird-font",
       "0",
       64
     );
+    this.scoreText.setOrigin(0.5, 0.5);
     this.scoreText.setDepth(150);
-    this.scoreText.setOrigin(0.5, 0);
   }
 
   update() {

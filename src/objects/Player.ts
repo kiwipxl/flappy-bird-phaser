@@ -76,7 +76,7 @@ export default class Player {
 
   reset() {
     this.sprite.setVisible(true);
-    this.sprite.setPosition(150, 200);
+    this.sprite.setPosition(150, 300);
     this.sprite.play("flap");
   }
 

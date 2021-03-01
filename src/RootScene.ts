@@ -19,6 +19,7 @@ export default class RootScene extends Phaser.Scene {
 
   preload() {
     this.load.image("ready-title", "./assets/sprites/ready-title.png");
+    this.load.image("gameover-title", "./assets/sprites/gameover.png");
 
     this.load.bitmapFont(
       "flappy-bird-font",
