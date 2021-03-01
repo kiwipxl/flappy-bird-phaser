@@ -40,7 +40,7 @@ export default class Player {
         { key: "bird-flap3" },
         { key: "bird-flap2" },
       ],
-      frameRate: 6,
+      frameRate: 8,
       repeat: -1,
     });
 

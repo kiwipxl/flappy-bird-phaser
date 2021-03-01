@@ -16,7 +16,7 @@ export default class GameOverUI extends Phaser.GameObjects.GameObject {
     );
     this.scoreText.setOrigin(0.5, 0.5);
     this.scoreText.setScale(1.5, 1.5);
-    this.scoreText.setTint(0xff8686);
+    this.scoreText.setTint(0xfca048);
     this.scoreText.setDepth(150);
 
     this.title = scene.add.image(200, 200, "gameover-title");

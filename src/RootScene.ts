@@ -37,6 +37,10 @@ export default class RootScene extends Phaser.Scene {
   }
 
   create() {
+    this.textures
+      .get("flappy-bird-font")
+      .setFilter(Phaser.Textures.FilterMode.NEAREST);
+
     this.gameManager.create();
     this.add.existing(this.gameManager);
 

@@ -15,7 +15,8 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
   public onUpdateScore: (newScore: number) => void;
   public onGameOver: () => void;
 
-  private static SCROLL_SPEED = 2;
+  private currentScrollSpeed: number = 0;
+  private targetScrollSpeed: number = 0;
 
   preload() {
     this.scene.load.audio("point", [
@@ -38,10 +39,14 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
   }
 
   update() {
+    this.currentScrollSpeed +=
+      (this.targetScrollSpeed - this.currentScrollSpeed) * 0.1;
+
+    this.ground.update(this.currentScrollSpeed);
+    this.obstacleSpawner.update(this.currentScrollSpeed);
+
     if (this.running) {
       this.player.update();
-      this.ground.update(GameManager.SCROLL_SPEED);
-      this.obstacleSpawner.update(GameManager.SCROLL_SPEED);
 
       let passed = false;
       for (const obstacle of this.obstacleSpawner.obstacles) {
@@ -73,11 +78,13 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
     this.player.reset();
     this.player.sprite.body.setAllowGravity(true);
     this.obstacleSpawner.start(this.ground, this.player);
+    this.targetScrollSpeed = 2;
   }
 
   pause() {
     this.running = false;
     this.player.sprite.body.setAllowGravity(false);
     this.player.sprite.body.setVelocity(0, 0);
+    this.targetScrollSpeed = 0;
   }
 }
