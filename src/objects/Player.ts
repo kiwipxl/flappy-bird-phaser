@@ -31,6 +31,7 @@ export default class Player {
   create() {
     this.sprite = this.scene.physics.add.sprite(0, 0, "bird");
     this.sprite.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    this.sprite.setOrigin(0.5, 0.5);
 
     this.scene.anims.create({
       key: "flap",
@@ -44,10 +45,11 @@ export default class Player {
       repeat: -1,
     });
 
+    // Set physics collider circle size
     this.sprite.setCircle(16);
-    this.sprite.setOrigin(0.5, 0.5);
 
     this.scene.input.on("pointerdown", () => {
+      // Jump flappy boy, jump!
       this.sprite.setVelocityY(-420);
     });
 
@@ -65,14 +67,14 @@ export default class Player {
     const ROTATE_SPEED = 0.25;
 
     let velY = this.sprite.body.velocity.y;
-    // clamp between min/max
+    // Clamp between min/max
     velY = Math.max(MIN_VEL_Y, Math.min(MAX_VEL_Y, velY));
 
     const t = (velY - MIN_VEL_Y) / (MAX_VEL_Y - MIN_VEL_Y);
 
     this.targetRotation = -TURN_ANGLE + TURN_ANGLE * 2 * t;
 
-    // lerp to target rotation
+    // Lerp to target rotation
     this.sprite.setRotation(
       this.sprite.rotation +
         (this.targetRotation - this.sprite.rotation) * ROTATE_SPEED
@@ -86,6 +88,7 @@ export default class Player {
   }
 
   die() {
+    // Create BLOODY EXPLOSION
     this.scene.sound.play("die");
 
     this.sprite.setVisible(false);

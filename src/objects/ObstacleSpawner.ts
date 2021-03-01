@@ -9,14 +9,19 @@ export default class ObstacleSpawner {
   private player: Player;
 
   public obstacles: PipeObstacle[] = [];
-  private spaceBetweenX: number = 250;
 
   public onHitObstacle: () => void;
 
-  public static DEPTH: number = 50;
+  // How much space to leave between the top and bottom (ground) where the pipes spawn.
   private static MIN_OFFSET_Y = 50;
-  private static SPACE_BETWEEN_Y = 150;
-  private static SPACE_BETWEEN_Y_HARD = 120;
+
+  // How much of a gap/space to leave for flappy boy to go through
+  private static PIPE_GAP = 150;
+  // How much of a gap/space to leave for flappy boy to go through (for HARD (red) pipes)
+  private static PIPE_GAP_HARD = 120;
+
+  // How much space between each obstacle. The lower the value, the more squished obstacles/pipes will be
+  private static SPACE_BETWEEN_X: number = 250;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -54,29 +59,37 @@ export default class ObstacleSpawner {
   createPipe() {
     let x = 0;
     if (this.obstacles.length > 0) {
-      x = this.obstacles[this.obstacles.length - 1].x + this.spaceBetweenX;
+      // If we already have obstacles, spawn next to the last one spawned.
+      x =
+        this.obstacles[this.obstacles.length - 1].x +
+        ObstacleSpawner.SPACE_BETWEEN_X;
     } else {
+      // Without any obstacles, start spawning outside the screen
       x = this.scene.game.scale.width + 100;
     }
 
+    // A hard pipe is one with a smaller gap. It spawns less frequently.
     const hardPipe = Math.random() > 0.65;
     let spaceBetweenY = hardPipe
-      ? ObstacleSpawner.SPACE_BETWEEN_Y_HARD
-      : ObstacleSpawner.SPACE_BETWEEN_Y;
+      ? ObstacleSpawner.PIPE_GAP_HARD
+      : ObstacleSpawner.PIPE_GAP;
 
-    const offsetY =
+    // Calculate where our pipe is vertically
+    const y =
       ObstacleSpawner.MIN_OFFSET_Y +
       (this.ground.y - spaceBetweenY - ObstacleSpawner.MIN_OFFSET_Y * 2) *
         Math.random();
 
-    let topPipe = new PipeObstacle(this.scene, x, offsetY, hardPipe);
+    // Create our top pipe
+    let topPipe = new PipeObstacle(this.scene, x, y, hardPipe);
     topPipe.setScale(1, -1);
     this.scene.add.existing(topPipe);
 
+    // Create our bottom pipe
     let bottomPipe = new PipeObstacle(
       this.scene,
       x,
-      offsetY + spaceBetweenY,
+      y + spaceBetweenY,
       hardPipe
     );
     bottomPipe.setScale(1, 1);
@@ -90,6 +103,7 @@ export default class ObstacleSpawner {
       [topPipe.collider, bottomPipe.collider],
       () => {
         this.onHitObstacle();
+        // Make sure we remove the collider, otherwise we'll keep colliding with it forever
         this.scene.physics.world.removeCollider(collider);
       }
     );
@@ -100,6 +114,7 @@ export default class ObstacleSpawner {
       return;
     }
 
+    // Remove obstacles that go outside the screen on the left
     const firstObstacle = this.obstacles[0];
 
     if (firstObstacle.x < -200) {

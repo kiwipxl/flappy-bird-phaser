@@ -39,6 +39,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
   }
 
   update() {
+    // Lerp scroll speed
     this.currentScrollSpeed +=
       (this.targetScrollSpeed - this.currentScrollSpeed) * 0.1;
 
@@ -48,6 +49,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
     if (this.running) {
       this.player.update();
 
+      // Check if we have passed an obstacle and update our score if we have
       let passed = false;
       for (const obstacle of this.obstacleSpawner.obstacles) {
         if (!obstacle.passed && obstacle.x < this.player.sprite.x) {
@@ -61,6 +63,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
         this.onUpdateScore(this.score + 1);
       }
 
+      // Check ground collision the simple way
       if (this.player.sprite.y >= this.ground.y - 32) {
         this.gameOver();
         this.player.sprite.setY(this.ground.y - 32);

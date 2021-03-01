@@ -42,6 +42,7 @@ export default class Ground {
   }
 
   update(scrollSpeed: number) {
+    // Remove ground images that have moved left and are now outside of the screen
     const firstGround = this.images[0];
     const lastGround = this.images[this.images.length - 1];
 
