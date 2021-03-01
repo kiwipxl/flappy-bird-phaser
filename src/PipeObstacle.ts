@@ -2,6 +2,7 @@ import "phaser";
 
 export default class PipeObstacle extends Phaser.GameObjects.Sprite {
   public collider: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  public passed: boolean = false;
 
   public static DEPTH: number = 50;
 

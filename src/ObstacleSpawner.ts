@@ -9,8 +9,10 @@ export default class ObstacleSpawner {
   private ground: Ground;
   private player: Player;
 
-  private obstacles: PipeObstacle[] = [];
+  public obstacles: PipeObstacle[] = [];
   private spaceBetweenX: number = 250;
+
+  public onPassObstacle: () => void;
 
   public static DEPTH: number = 50;
   private static MIN_OFFSET_Y = 50;
