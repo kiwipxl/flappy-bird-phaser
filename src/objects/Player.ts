@@ -3,6 +3,7 @@ import "phaser";
 export default class Player {
   private scene: Phaser.Scene;
   public sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private targetRotation: number = 0;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -36,10 +37,8 @@ export default class Player {
       repeat: -1,
     });
 
-    this.sprite.play("flap");
     this.sprite.setCircle(16);
-    this.sprite.setOrigin(0, 0);
-    this.sprite.setBounce(0.5);
+    this.sprite.setOrigin(0.5, 0.5);
 
     this.scene.input.on("pointerdown", () => {
       this.sprite.setVelocityY(-420);
@@ -48,7 +47,33 @@ export default class Player {
     this.reset();
   }
 
+  update() {
+    this.updateRotation();
+  }
+
+  updateRotation() {
+    const MIN_VEL_Y = -100;
+    const MAX_VEL_Y = 300;
+    const TURN_ANGLE = Math.PI * 0.5 * 0.5;
+    const ROTATE_SPEED = 0.25;
+
+    let velY = this.sprite.body.velocity.y;
+    // clamp between min/max
+    velY = Math.max(MIN_VEL_Y, Math.min(MAX_VEL_Y, velY));
+
+    const t = (velY - MIN_VEL_Y) / (MAX_VEL_Y - MIN_VEL_Y);
+
+    this.targetRotation = -TURN_ANGLE + TURN_ANGLE * 2 * t;
+
+    // lerp to target rotation
+    this.sprite.setRotation(
+      this.sprite.rotation +
+        (this.targetRotation - this.sprite.rotation) * ROTATE_SPEED
+    );
+  }
+
   reset() {
     this.sprite.setPosition(150, 200);
+    this.sprite.play("flap");
   }
 }

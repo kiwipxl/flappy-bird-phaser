@@ -34,6 +34,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
 
   update() {
     if (this.running) {
+      this.player.update();
       this.ground.update(GameManager.SCROLL_SPEED);
       this.obstacleSpawner.update(GameManager.SCROLL_SPEED);
 
@@ -49,9 +50,9 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
         this.onUpdateScore(this.score + 1);
       }
 
-      if (this.player.sprite.y >= this.ground.y - 42) {
+      if (this.player.sprite.y >= this.ground.y - 32) {
         this.gameOver();
-        this.player.sprite.setY(this.ground.y - 42);
+        this.player.sprite.setY(this.ground.y - 32);
       }
     }
   }
