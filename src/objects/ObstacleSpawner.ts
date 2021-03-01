@@ -54,7 +54,7 @@ export default class ObstacleSpawner {
     if (this.obstacles.length > 0) {
       x = this.obstacles[this.obstacles.length - 1].x + this.spaceBetweenX;
     } else {
-      x = this.scene.game.scale.width;
+      x = this.scene.game.scale.width + 100;
     }
 
     const spaceBetweenY = ObstacleSpawner.SPACE_BETWEEN_Y;

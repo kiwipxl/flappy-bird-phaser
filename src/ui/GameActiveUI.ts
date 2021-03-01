@@ -21,4 +21,8 @@ export default class GameActiveUI extends Phaser.GameObjects.GameObject {
   update() {
     this.scoreText.setText(this.score.toString());
   }
+
+  destroy() {
+    this.scene.children.remove(this.scoreText);
+  }
 }

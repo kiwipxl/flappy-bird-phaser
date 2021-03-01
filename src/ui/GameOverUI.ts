@@ -18,4 +18,8 @@ export default class GameOverUI extends Phaser.GameObjects.GameObject {
   }
 
   update() {}
+
+  destroy() {
+    this.scene.children.remove(this.scoreText);
+  }
 }

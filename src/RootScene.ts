@@ -18,6 +18,8 @@ export default class RootScene extends Phaser.Scene {
   private currentUI: Phaser.GameObjects.GameObject;
 
   preload() {
+    this.load.image("ready-title", "./assets/sprites/ready-title.png");
+
     this.load.bitmapFont(
       "flappy-bird-font",
       "./assets/fonts/flappy_bird_numbers_48px.png",
@@ -69,7 +71,7 @@ export default class RootScene extends Phaser.Scene {
     this.state = newState;
 
     if (this.currentUI) {
-      this.children.remove(this.currentUI);
+      this.currentUI.destroy();
     }
 
     switch (newState) {
