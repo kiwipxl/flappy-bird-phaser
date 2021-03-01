@@ -21,6 +21,11 @@ export default class Player {
     this.scene.load.image("bird-flap3", "./assets/sprites/bluebird-upflap.png");
 
     this.scene.load.image("fire", "./assets/sprites/fire.png");
+
+    this.scene.load.audio("die", [
+      "./assets/audio/die.ogg",
+      "./assets/audio/die.wav",
+    ]);
   }
 
   create() {
@@ -81,6 +86,8 @@ export default class Player {
   }
 
   die() {
+    this.scene.sound.play("die");
+
     this.sprite.setVisible(false);
 
     const particles = this.scene.add.particles("fire");

@@ -18,6 +18,11 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
   private static SCROLL_SPEED = 2;
 
   preload() {
+    this.scene.load.audio("point", [
+      "./assets/audio/point.ogg",
+      "./assets/audio/point.wav",
+    ]);
+
     this.background.preload();
     this.ground.preload();
     this.player.preload();
@@ -47,6 +52,7 @@ export default class GameManager extends Phaser.GameObjects.GameObject {
       }
 
       if (passed) {
+        this.scene.sound.play("point");
         this.onUpdateScore(this.score + 1);
       }
 

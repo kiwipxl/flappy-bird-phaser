@@ -15,7 +15,8 @@ export default class ObstacleSpawner {
 
   public static DEPTH: number = 50;
   private static MIN_OFFSET_Y = 50;
-  private static SPACE_BETWEEN_Y = 135;
+  private static SPACE_BETWEEN_Y = 150;
+  private static SPACE_BETWEEN_Y_HARD = 120;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -23,6 +24,7 @@ export default class ObstacleSpawner {
 
   preload() {
     this.scene.load.image("pipe-green", "./assets/sprites/pipe-green.png");
+    this.scene.load.image("pipe-red", "./assets/sprites/pipe-red.png");
   }
 
   start(ground: Ground, player: Player) {
@@ -57,17 +59,26 @@ export default class ObstacleSpawner {
       x = this.scene.game.scale.width + 100;
     }
 
-    const spaceBetweenY = ObstacleSpawner.SPACE_BETWEEN_Y;
+    const hardPipe = Math.random() > 0.65;
+    let spaceBetweenY = hardPipe
+      ? ObstacleSpawner.SPACE_BETWEEN_Y_HARD
+      : ObstacleSpawner.SPACE_BETWEEN_Y;
+
     const offsetY =
       ObstacleSpawner.MIN_OFFSET_Y +
       (this.ground.y - spaceBetweenY - ObstacleSpawner.MIN_OFFSET_Y * 2) *
         Math.random();
 
-    let topPipe = new PipeObstacle(this.scene, x, offsetY);
+    let topPipe = new PipeObstacle(this.scene, x, offsetY, hardPipe);
     topPipe.setScale(1, -1);
     this.scene.add.existing(topPipe);
 
-    let bottomPipe = new PipeObstacle(this.scene, x, offsetY + spaceBetweenY);
+    let bottomPipe = new PipeObstacle(
+      this.scene,
+      x,
+      offsetY + spaceBetweenY,
+      hardPipe
+    );
     bottomPipe.setScale(1, 1);
     this.scene.add.existing(bottomPipe);
 
